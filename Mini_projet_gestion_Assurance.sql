@@ -70,14 +70,17 @@ FROM public.riviere FULL JOIN public.parcelle ON public.parcelle.id_riviere = pu
 SELECT DISTINCT  ST_Area(st_intersection(polygone, ST_Buffer(polyline, 10))) * parcelle.remboursement_prix_unitaire AS montantDedomagement 
 FROM public.riviere FULL JOIN public.parcelle ON public.parcelle.id_riviere = public.riviere.id ; 
 -- requête rassemblant tout les requêtes precedente :
-SELECT DISTINCT parcelle.id,
+SELECT DISTINCT proprietaire.nom,
+				proprietaire.prenom,
                 parcelle.type_agriculture AS agriculture,
                 parcelle.polygone AS parcelle,
-	  riviere.polyline AS riviere,
+	  			riviere.polyline AS riviere,
                 ST_Union(polygone, ST_Buffer(polyline, 10)) AS UNION,
-	  st_intersection(polygone, ST_Buffer(polyline, 10)) as intersection_parcelle_riviere,
+	  			st_intersection(polygone, ST_Buffer(polyline, 10)) as intersection_parcelle_riviere,
                 ST_Area(st_intersection(polygone, ST_Buffer(polyline, 10))) AS surface_Endomagé,
 	  parcelle.remboursement_prix_unitaire as remboursement_prix_unitaire,
-ST_Area(st_intersection(polygone, ST_Buffer(polyline, 10))) * parcelle.remboursement_prix_unitaire AS montantDedomagement 
-FROM public.riviere FULL JOIN public.parcelle ON public.parcelle.id_riviere = public.riviere.id ;
+ST_Area(st_intersection(polygone, ST_Buffer(polyline, 10))) * parcelle.remboursement_prix_unitaire AS REMBOURSEMENT 
+FROM public.riviere,public.proprietaire,public.parcelle
+where proprietaire.id = parcelle.id_proprietaire
+
 
